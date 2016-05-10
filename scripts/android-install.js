@@ -1,11 +1,21 @@
 #!/usr/bin/env node
 
 module.exports = function (context) {
+
+    function requireConfigParser() {
+      try {
+        return context.requireCordovaModule('cordova-common').ConfigParser; 
+      } catch (e) {
+        // fallback
+        return context.requireCordovaModule('cordova-lib/src/configparser/ConfigParser');
+      }
+    }
+
     var path         = context.requireCordovaModule('path'),
         fs           = context.requireCordovaModule('fs'),
         shell        = context.requireCordovaModule('shelljs'),
         projectRoot  = context.opts.projectRoot,
-        ConfigParser = context.requireCordovaModule('cordova-lib/src/configparser/ConfigParser'),
+        ConfigParser = requireConfigParser(), 
         config       = new ConfigParser(path.join(context.opts.projectRoot, "config.xml")),
         packageName  = config.android_packageName() || config.packageName();
 
